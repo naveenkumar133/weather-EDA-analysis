@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather EDA Dashboard</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">
+        <div class="mark">W</div>
+        <div>
+          <h2>Weather EDA Lab</h2>
+          <p>advanced analysis</p>
+        </div>
+      </div>
+      <div class="side-highlights">
+        <div class="side-card"><strong id="hRecords">-</strong><span>clean records</span></div>
+        <div class="side-card"><strong id="hCities">-</strong><span>cities</span></div>
+        <div class="side-card"><strong id="hHot">-</strong><span>hottest city</span></div>
+        <div class="side-card"><strong id="hWet">-</strong><span>wettest city</span></div>
+      </div>
+      <label for="cityFilter">City Focus</label>
+      <select id="cityFilter" multiple size="10"></select>
+      <label for="yearStart">Start Year</label>
+      <select id="yearStart"></select>
+      <label for="yearEnd">End Year</label>
+      <select id="yearEnd"></select>
+      <label for="seasonFilter">Season</label>
+      <select id="seasonFilter">
+        <option value="All">All seasons</option>
+        <option value="Winter">Winter</option>
+        <option value="Pre-monsoon">Pre-monsoon</option>
+        <option value="Monsoon">Monsoon</option>
+        <option value="Post-monsoon">Post-monsoon</option>
+      </select>
+      <label for="metricFilter">Trend Metric</label>
+      <select id="metricFilter">
+        <option value="tavg">Average temperature</option>
+        <option value="tmax">Maximum temperature</option>
+        <option value="tmin">Minimum temperature</option>
+        <option value="prcp">Rainfall</option>
+        <option value="pres">Pressure</option>
+        <option value="sunshine_hours">Sunshine hours</option>
+        <option value="temp_range">Temperature range</option>
+      </select>
+      <div class="hint">Tip: use Ctrl + click to compare multiple cities. The selected rows, charts, and highlight cards refresh instantly.</div>
+    </aside>
+    <main>
+      <section class="hero">
+        <div>
+          <h1>Popular Cities Weather Dashboard</h1>
+          <p>Interactive EDA dashboard for monthly weather patterns across Indian cities: trend analysis, rainfall intensity, data quality, outliers, seasonal heatmaps, and unsupervised climate clusters.</p>
+        </div>
+        <div class="hero-stat">
+          <span>Dataset window</span>
+          <strong id="datasetWindow">-</strong>
+          <span id="datasetSummary">-</span>
+        </div>
+      </section>
+      <section class="metrics">
+        <div class="metric"><div class="label">Records</div><div class="value" id="mRecords">-</div><div class="note">Filtered rows</div></div>
+        <div class="metric"><div class="label">Avg Temperature</div><div class="value" id="mTemp">-</div><div class="note">Mean monthly value</div></div>
+        <div class="metric"><div class="label">Total Rainfall</div><div class="value" id="mRain">-</div><div class="note">Filtered total</div></div>
+        <div class="metric"><div class="label">Rainy Month Rate</div><div class="value" id="mRainy">-</div><div class="note">Rainfall greater than zero</div></div>
+        <div class="metric"><div class="label">Cities</div><div class="value" id="mCities">-</div><div class="note">Selected city count</div></div>
+      </section>
+      <nav class="tabs">
+        <button class="tab active" data-view="overview">Overview</button>
+        <button class="tab" data-view="city">City Rankings</button>
+        <button class="tab" data-view="season">Seasonality</button>
+        <button class="tab" data-view="quality">Quality & Outliers</button>
+        <button class="tab" data-view="cluster">Climate Clusters</button>
+      </nav>
+      <section id="overview" class="view active">
+        <div class="grid">
+          <div class="panel span-8"><h3>Monthly Trend</h3><p>Compare the selected weather metric across cities and years.</p><div id="trendChart" class="chart"></div></div>
+          <div class="panel span-4"><h3>Correlation Matrix</h3><p>Relationship strength between core weather variables.</p><div id="corrChart" class="chart"></div></div>
+          <div class="panel span-6"><h3>Rainfall vs Temperature by Month</h3><p>Dual-axis view for the selected filter context.</p><div id="monthChart" class="chart"></div></div>
+          <div class="panel span-6"><h3>Pressure vs Temperature</h3><p>Points are sized by rainfall intensity.</p><div id="scatterChart" class="chart"></div></div>
+        </div>
+      </section>
+      <section id="city" class="view">
+        <div class="grid">
+          <div class="panel span-7"><h3>City Ranking</h3><p>Rank selected cities by key climate metrics.</p><select id="rankMetric" class="rank-select"><option value="avg_temp">Average temperature</option><option value="max_temp">Maximum temperature</option><option value="total_rain">Total rainfall</option><option value="avg_rain">Average rainfall</option><option value="rainy_rate">Rainy month rate</option><option value="avg_sunshine">Average sunshine</option></select><div id="rankChart" class="chart"></div></div>
+          <div class="panel span-5"><h3>City Summary Table</h3><p>Clean summary for portfolio reporting.</p><div id="cityTable"></div></div>
+        </div>
+      </section>
+      <section id="season" class="view">
+        <div class="grid">
+          <div class="panel span-6"><h3>Temperature by Season</h3><p>Box plot showing seasonal spread.</p><div id="seasonTempChart" class="chart"></div></div>
+          <div class="panel span-6"><h3>Rainfall by Season</h3><p>Distribution of precipitation by season.</p><div id="seasonRainChart" class="chart"></div></div>
+          <div class="panel span-12"><h3>Monthly Rainfall Heatmap</h3><p>Top wettest cities in the current selection.</p><div id="heatmapChart" class="chart tall"></div></div>
+        </div>
+      </section>
+      <section id="quality" class="view">
+        <div class="grid">
+          <div class="panel span-5"><h3>Missing Values</h3><p>Completeness profile after filters.</p><div id="missingChart" class="chart"></div></div>
+          <div class="panel span-7"><h3>Extreme Rainfall Events</h3><p>Largest precipitation records in the selected data.</p><div id="outlierTable"></div></div>
+        </div>
+      </section>
+      <section id="cluster" class="view">
+        <div class="grid">
+          <div class="panel span-8"><h3>Climate Cluster Map</h3><p>KMeans clusters projected into two dimensions with PCA.</p><div id="clusterChart" class="chart"></div></div>
+          <div class="panel span-4"><h3>Automated Insights</h3><p>Key observations from the full dataset.</p><div id="insights"></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="assets/dashboard-data.js"></script>
+  <script src="assets/dashboard-app.js"></script>
+</body>
+</html>
